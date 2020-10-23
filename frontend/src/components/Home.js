@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { isAuth } from "../helpers/auth";
+import { createBrowserHistory } from "history";
+import { isAuth, isLogout } from "../helpers/auth";
+
+const history = createBrowserHistory({ forceRefresh: true });
 
 class Home extends Component {
   constructor(props) {
@@ -10,6 +13,12 @@ class Home extends Component {
       list: [],
       loading: true,
     };
+  }
+
+  handleLogout(e) {
+    e.preventDefault();
+    isLogout();
+    history.push("/login");
   }
 
   componentWillMount() {
@@ -43,6 +52,11 @@ class Home extends Component {
     return (
       <div className="mt-5">
         <div className="container" style={{ maxWidth: "500px" }}>
+          <div>
+            <button onClick={this.handleLogout} class="badge badge-secondary">
+              Logout
+            </button>
+          </div>
           <div>
             <h4>List Task</h4>
             <hr />

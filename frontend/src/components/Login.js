@@ -28,12 +28,6 @@ class Login extends Component {
     formData.append("email", this.state.email);
     formData.append("password", this.state.password);
 
-    // let axiosConfig = {
-    //     headers: {
-    //         "Content-Type": "application/x-www-form-urlencoded"
-    //     }
-    // };
-
     axios
       .post("http://localhost:3004/api/login", {
         email: this.state.email,
