@@ -32,6 +32,8 @@ Run application
     npm run serve
 
 
+Postman = https://www.getpostman.com/collections/44832981e213a827a84e
+
 ## License
 
 [MIT](LICENSE)
