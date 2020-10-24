@@ -13,10 +13,9 @@ class Home extends Component {
     this.state = {
       list: [],
       loading: true,
-      listUser: [],
-      user_id: "",
-      task: "",
-      description: "",
+      email: "",
+      name: "",
+      password: "",
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -38,11 +37,11 @@ class Home extends Component {
 
     axios
       .post(
-        "http://localhost:3004/api/assign",
+        "http://localhost:3004/api/users",
         {
-          user_id: this.state.user_id,
-          task: this.state.task,
-          description: this.state.description,
+          name: this.state.name,
+          email: this.state.email,
+          password: "123456",
         },
         {
           headers: {
@@ -51,25 +50,8 @@ class Home extends Component {
         }
       )
       .then((res) => {
-        console.log(res);
-        alert("Success create task");
-        setTimeout(() => history.push("/"), 400);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  handleClickDelete(id) {
-    axios
-      .delete("http://localhost:3004/api/tasks/" + id, {
-        headers: {
-          Authorization: "Bearer " + isAuth(),
-        },
-      })
-      .then((res) => {
-        alert("Success delete task");
-        setTimeout(() => history.push("/"), 400);
+        alert("Success create user");
+        history.push("/");
       })
       .catch((err) => {
         console.log(err);
@@ -78,11 +60,9 @@ class Home extends Component {
 
   componentWillMount() {
     axios
-      .post(
-        "http://localhost:3004/api/tasks/common",
-        {
-          user: [],
-        },
+      .get(
+        "http://localhost:3004/api/users",
+        {},
         {
           headers: {
             Authorization: "Bearer " + isAuth(),
@@ -98,32 +78,13 @@ class Home extends Component {
       .catch((err) => {
         console.log(err);
       });
-
-    axios
-      .get(
-        "http://localhost:3004/api/users",
-        {},
-        {
-          headers: {
-            Authorization: "Bearer " + isAuth(),
-          },
-        }
-      )
-      .then((res) => {
-        this.setState({
-          listUser: res.data.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   }
 
   render() {
-    const { list, listUser, loading } = this.state;
+    const { list, loading } = this.state;
     const { handleSubmit, handleChange } = this;
     return (
-      <div className="mt-5">
+      <div className="mt-5 mb-5">
         <div className="container" style={{ maxWidth: "500px" }}>
           <Header />
           <div className="mt-5 mb-4">
@@ -132,35 +93,23 @@ class Home extends Component {
             </button>
           </div>
           <div className="mt-5 mt-4">
-            <h4>Add Task</h4>
+            <h4>Add Users</h4>
             <hr />
             <div>
               <form method="post" onSubmit={handleSubmit}>
                 <div class="form-group">
-                  <label for="exampleFormControlSelect1">User</label>
-                  <select
-                    name="user_id"
-                    onChange={handleChange}
-                    class="form-control"
-                  >
-                    {listUser.map((key, i) => {
-                      return <option value={key.id}>{key.name}</option>;
-                    })}
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="exampleFormControlInput1">Task</label>
+                  <label for="exampleFormControlInput1">Email address</label>
                   <input
-                    name="task"
+                    name="email"
                     onChange={handleChange}
-                    type="text"
+                    type="email"
                     class="form-control"
                   />
                 </div>
                 <div class="form-group">
-                  <label for="exampleFormControlInput1">Description</label>
+                  <label for="exampleFormControlInput1">Name</label>
                   <input
-                    name="description"
+                    name="name"
                     onChange={handleChange}
                     type="text"
                     class="form-control"
@@ -181,10 +130,9 @@ class Home extends Component {
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Task</th>
-                <th scope="col">Description</th>
-                <th scope="col">Status</th>
-                <th scope="col">Action</th>
+                <th scope="col">Email</th>
+                <th scope="col">Name</th>
+                <th scope="col">Role</th>
               </tr>
             </thead>
             <tbody>
@@ -194,21 +142,9 @@ class Home extends Component {
                     return (
                       <tr>
                         <th scope="row">#</th>
-                        <td>{key.task}</td>
-                        <td>{key.description}</td>
-                        <td>{key.status}</td>
-                        <td>
-                          <a href={"/edit/" + key.id} class="btn btn-primary">
-                            Edit
-                          </a>
-                          <button
-                            onClick={() => this.handleClickDelete(key.id)}
-                            style={{ cursor: "pointer" }}
-                            className="btn btn-secondary"
-                          >
-                            Delete
-                          </button>
-                        </td>
+                        <td>{key.email}</td>
+                        <td>{key.name}</td>
+                        <td>User</td>
                       </tr>
                     );
                   })}

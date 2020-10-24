@@ -8,6 +8,7 @@ const taskController = require("../controller/taskController");
 module.exports = app => {
   router.post("/login", userController.login);
   router.post("/users", userController.createUser);
+  router.get("/users", userController.listUser);
   router.post("/assign", authToken, taskController.createTask);
   router.post("/tasks/common", authToken, taskController.listTask);
   router.put("/tasks/:id", authToken, taskController.updateTask);

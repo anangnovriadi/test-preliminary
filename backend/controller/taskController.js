@@ -14,8 +14,8 @@ const createTask = (req, res) => {
             value: req.body.user_id
           },
           {
-            name: "name",
-            value: req.body.name
+            task: "task",
+            value: req.body.task
           },
           {
             name: "description",
@@ -36,7 +36,7 @@ const createTask = (req, res) => {
       function createData(data, callback) {
         let request = {
           user_id: req.body.user_id,
-          name: req.body.name,
+          task: req.body.task,
           description: req.body.description
         };
 
@@ -80,19 +80,23 @@ const listTask = (req, res) => {
         callback(null, {});
       },
       function getData(data, callback) {
+        let query = {};
+        query.raw = true,
+        query.include = [
+          {
+            model: models.users,
+            as: "users"
+          }
+        ]
+        
+        if (req.body.user.length !== 0) {
+          query.where = {
+            "$users.email$": req.body.user
+          }
+        }
+
         models.tasks
-          .findAll({
-            raw: true,
-            include: [
-              {
-                model: models.users,
-                as: "users"
-              }
-            ],
-            where: {
-              "$users.email$": req.body.user
-            }
-          })
+          .findAll(query)
           .then((result, err) => {
             if (err) return req.output(req, res, err, "error", 400);
             if (result.length < 1)

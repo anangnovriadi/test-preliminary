@@ -31,8 +31,10 @@ Run application
   
     npm run serve
 
+user: admin@admin.com
+pass: 123456
 
-Postman = https://www.getpostman.com/collections/44832981e213a827a84e
+Postman = https://www.getpostman.com/collections/c48d55c4943d06effda2
 
 ## License
 

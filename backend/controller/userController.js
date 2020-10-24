@@ -150,4 +150,72 @@ const createUser = (req, res) => {
   );
 };
 
-module.exports = { login, createUser };
+const listUser = (req, res) => {
+  async.waterfall(
+    [
+      function validation(callback) {
+        let valid = true;
+        let dataValidator = [];
+
+        req.validation.validate(dataValidator, err => {
+          if (err) {
+            valid = false;
+            return req.output(req, res, err, "error", 400);
+          }
+        });
+
+        if (!valid) return;
+        callback(null, {});
+      },
+      function getData(data, callback) {
+        let request = {
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+          role_id: 2
+        };
+
+        models.users
+          .findAll({
+            where: {
+              role_id: 2
+            }
+          })
+          .then((result, err) => {
+            if (err) return req.output(req, res, err, "error", 400);
+            if (result.length < 1)
+              return req.output(
+                req,
+                res,
+                {
+                  error: true,
+                  message: "Not found",
+                  data: {}
+                },
+                "error",
+                400
+              );
+
+            callback(null, {
+              error: false,
+              message: "Found",
+              data: result,
+              count: result.length
+            });
+          })
+          .catch(err => {
+            callback(null, err);
+          });
+      }
+    ],
+    (err, result) => {
+      if (err) {
+        return req.output(req, res, err, "error", 400);
+      }
+
+      return req.output(req, res, result, "info", 200);
+    }
+  );
+};
+
+module.exports = { login, createUser, listUser };
